@@ -16,8 +16,9 @@ player_x, player_y = game_map.get_spawn("player_spawn")
 player = Player(player_x, player_y)
 enemies=pygame.sprite.Group()
 for enemy in game_map.enemy_spawns:
-    if enemy["type"]=="guard":
+    if enemy["name"]=="guard":
         enemies.add(Guard(enemy["x"],enemy["y"]))
+print(game_map.enemy_spawns)
 VIEW_WIDTH = 300
 VIEW_HEIGHT = 200
 
@@ -47,6 +48,8 @@ while run:
         weapon.update()
     camera_x = player.rect.centerx - VIEW_WIDTH // 2
     camera_y = player.rect.centery - VIEW_HEIGHT // 2
+    camera_x=max(0,min(camera_x,game_map.width-VIEW_WIDTH))
+    camera_y=max(0,min(camera_y,game_map.height-VIEW_HEIGHT))
     view_surface.fill((0,0,0))
     game_map.draw(view_surface, camera_x, camera_y)
     view_surface.blit(
