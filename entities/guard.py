@@ -21,7 +21,7 @@ class Guard(Enemy):
             self.animations["walk"]["down"].append(pygame.image.load(f"Asset/Enemies/Guard/walk/Down/WalkDown ({i}).png"))
             self.animations["walk"]["up"].append(pygame.image.load(f"Asset/Enemies/Guard/walk/Up/WalkUp ({i}).png"))
             self.animations["walk"]["right"].append(pygame.image.load(f"Asset/Enemies/Guard/walk/Right/WalkRight ({i}).png"))
-            self.animations["walk"]["down"].append(pygame.image.load(f"Asset/Enemies/Guard/walk/Left/WalkLeft ({i}).png"))
+            self.animations["walk"]["left"].append(pygame.image.load(f"Asset/Enemies/Guard/walk/Left/WalkLeft ({i}).png"))
         self.image=self.animations["idle"]["down"]
         self.rect=self.image.get_rect(topleft=(x,y))
         self.weapon=pygame.image.load("Asset/Weapons/Katana/SpriteBack.png").convert_alpha()
@@ -34,7 +34,7 @@ class Guard(Enemy):
         self.animate()
     def animate(self):
         if self.state=="idle":
-            self.animations["idle"][self.direction]
+            self.image=self.animations["idle"][self.direction]
         else:
             self.frame+=self.animation_speed
             frames=self.animations["walk"][self.direction]

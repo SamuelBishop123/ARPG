@@ -11,7 +11,7 @@ class Enemy(pygame.sprite.Sprite):
         self.state="idle"
         self.animation_speed=0.15
         self.frame=0
-        self.vision_range=200
+        self.vision_range=100
     def move_towards(self,target):
         dx=target[0]-self.rect.centerx
         dy=target[1]-self.rect.centery
@@ -45,8 +45,8 @@ class Enemy(pygame.sprite.Sprite):
             "down":-90
         }
         guard_angle=direction_angles[self.direction]
-        angle_diff=abs(guard_angle-angle_to_player)
-        return angle_diff>45
+        angle_diff=abs((guard_angle-angle_to_player+180)%360-180)
+        return angle_diff<45
     def take_damage(self,damage):
         self.health-=damage
         if self.health<=0:
@@ -54,7 +54,7 @@ class Enemy(pygame.sprite.Sprite):
     def is_player_behind(self, player):
         dx=player.rect.centerx-self.rect.centerx
         dy=player.rect.centery-self.rect.centery
-        dist=math.hypo(dx,dy)
+        dist=math.hypot(dx,dy)
         if dist>50:
             return False
         direction_vectors={
