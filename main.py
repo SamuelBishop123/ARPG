@@ -15,10 +15,11 @@ player_x, player_y = game_map.get_spawn("player_spawn")
 
 player = Player(player_x, player_y)
 enemies=pygame.sprite.Group()
-for enemy in game_map.enemy_spawns:
-    if enemy["name"]=="guard":
-        enemies.add(Guard(enemy["x"],enemy["y"]))
-print(game_map.enemy_spawns)
+def spawn_enemies():
+    enemies.empty()
+    for enemy in game_map.enemy_spawns:
+        if enemy["name"]=="guard":
+            enemies.add(Guard(enemy["x"],enemy["y"]))
 VIEW_WIDTH = 300
 VIEW_HEIGHT = 200
 
@@ -43,6 +44,7 @@ while run:
             game_map=MapLoader("maps/"+t["target_map"])
             player_x,player_y=game_map.get_spawn(t["spawn"])
             player.rect.topleft=(player_x,player_y)
+            spawn_enemies()
             break
     if player.attacking:
         weapon.update()

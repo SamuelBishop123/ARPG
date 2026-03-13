@@ -14,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
         self.vision_range=200
     def move_towards(self,target):
         dx=target[0]-self.rect.centerx
-        dy=target[0]-self.rect.centery
+        dy=target[1]-self.rect.centery
         dist=math.hypot(dx,dy)
         if dist>0:
             self.rect.x+=self.speed*dx/dist
@@ -25,17 +25,28 @@ class Enemy(pygame.sprite.Sprite):
             if dx>0:
                 self.direction="right"
             else:
-                self.direction="up"
+                self.direction="left"
         else:
             if dy>0:
-                self.direction="right"
+                self.direction="down"
             else:
                 self.direction="up"
     def can_see_player(self, player):
-        dx=player.rect.centerx-self.rect.center
+        dx=player.rect.centerx-self.rect.centerx
         dy=player.rect.centery-self.rect.centery
         dist=math.hypot(dx,dy)
-        return dist<self.vision_range
+        if dist>self.vision_range:
+            return False
+        angle_to_player=math.degrees(math.atan2(-dy,dx))
+        direction_angles={
+            "right":0,
+            "up":90,
+            "left":180,
+            "down":-90
+        }
+        guard_angle=direction_angles[self.direction]
+        angle_diff=abs(guard_angle-angle_to_player)
+        return angle_diff>45
     def take_damage(self,damage):
         self.health-=damage
         if self.health<=0:
