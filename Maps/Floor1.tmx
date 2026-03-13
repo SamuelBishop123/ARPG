@@ -88,7 +88,7 @@
   <object id="46" type="collision" x="192" y="474" width="84" height="4"/>
  </objectgroup>
  <objectgroup id="5" name="enemy">
-  <object id="48" name="guard" type="enemy" x="233" y="72"/>
+  <object id="48" name="guard" type="enemy" x="232" y="38"/>
   <object id="49" name="guard" type="enemy" x="242" y="271"/>
  </objectgroup>
  <objectgroup id="4" name="spawn">

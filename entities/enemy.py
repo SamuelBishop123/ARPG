@@ -11,14 +11,17 @@ class Enemy(pygame.sprite.Sprite):
         self.state="idle"
         self.animation_speed=0.15
         self.frame=0
-        self.vision_range=100
+        self.vision_range=150
     def move_towards(self,target):
         dx=target[0]-self.rect.centerx
         dy=target[1]-self.rect.centery
         dist=math.hypot(dx,dy)
-        if dist>0:
+        if dist>32:
             self.rect.x+=self.speed*dx/dist
             self.rect.y+=self.speed*dy/dist
+            self.state="walk"
+        else:
+            self.state="idle"
         self.set_direction(dx,dy)
     def set_direction(self,dx,dy):
         if abs(dx)>abs(dy):
