@@ -38,6 +38,7 @@ while run:
         if event.type == pygame.QUIT:
             run = False
     player.update(game_map.collisions)
+    player.attack(enemies)
     enemies.update(player)
     for t in game_map.transitions:
         if player.rect.colliderect(t["rect"]):

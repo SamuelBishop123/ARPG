@@ -36,6 +36,7 @@ class Player(pygame.sprite.Sprite):
         self.rect=self.image.get_rect()
         self.rect.topleft= (x,y)
         self.attacking=False
+        self.damage=20
     def update(self,collisions):
         keys=pygame.key.get_pressed()
         dx=0
@@ -99,3 +100,23 @@ class Player(pygame.sprite.Sprite):
             if self.frame>=len(frames):
                 self.frame=0
             self.image=frames[int(self.frame)]
+
+    def attack(self,enemies_group):
+        if not self.attacking:
+            return
+        attack_rect=self.rect.copy()
+        offset=20
+        if self.direction=="up":
+            attack_rect.y-=offset
+        elif self.direction=="down":
+            attack_rect.y+=offset
+        elif self.direction=="left":
+            attack_rect.x-=offset
+        elif self.direction=="right":
+            attack_rect.x+=offset
+        for enemy in enemies_group:
+            if attack_rect.colliderect(enemy.rect):
+                if enemy.is_player_behind(self):
+                    enemy.take_damage(999)
+                else:
+                    enemy.take_damage(self.damage)

@@ -11,12 +11,12 @@ class Enemy(pygame.sprite.Sprite):
         self.state="idle"
         self.animation_speed=0.15
         self.frame=0
-        self.vision_range=200
-    def move_towards(self,target):
+        self.vision_range=100
+    def move_towards(self,target,stop_distance):
         dx=target[0]-self.rect.centerx
         dy=target[1]-self.rect.centery
         dist=math.hypot(dx,dy)
-        if dist>32:
+        if dist>stop_distance:
             self.rect.x+=self.speed*dx/dist
             self.rect.y+=self.speed*dy/dist
             self.state="walk"
@@ -53,7 +53,12 @@ class Enemy(pygame.sprite.Sprite):
     def take_damage(self,damage):
         self.health-=damage
         if self.health<=0:
-            self.kill()
+            if hasattr(self,'animations') and "death" in self.animations:
+                self.dead=True
+                self.state="death"
+                self.death_timer=0
+            else:
+                self.kill()
     def is_player_behind(self, player):
         dx=player.rect.centerx-self.rect.centerx
         dy=player.rect.centery-self.rect.centery

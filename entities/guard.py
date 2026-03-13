@@ -4,7 +4,7 @@ import math
 
 class Guard(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, health=50, speed=2)
+        super().__init__(x, y, health=50, speed=1)
         offset=50
         self.patrol_points=[(x,y),(x+offset,y),(x+offset,y+offset),(x,y+offset)]
         self.patrol_index=0
@@ -15,12 +15,16 @@ class Guard(Enemy):
                 "up":[],
                 "left":[],
                 "right":[]
-            }
+            },
+            "death":{}
         }
         self.animations["idle"]["down"]=pygame.image.load("Asset/Enemies/Guard/idle/Idle (1).png").convert_alpha()
         self.animations["idle"]["up"]=pygame.image.load("Asset/Enemies/Guard/idle/Idle (2).png").convert_alpha()
         self.animations["idle"]["left"]=pygame.image.load("Asset/Enemies/Guard/idle/Idle (3).png").convert_alpha()
         self.animations["idle"]["right"]=pygame.image.load("Asset/Enemies/Guard/idle/Idle (4).png").convert_alpha()
+        self.animations["death"]=pygame.image.load("Asset/Enemies/Guard/Dead.png").convert_alpha()
+        self.dead=False
+        self.death_timer=0
         for i in range(1,5):
             self.animations["walk"]["down"].append(pygame.image.load(f"Asset/Enemies/Guard/walk/Down/WalkDown ({i}).png").convert_alpha())
             self.animations["walk"]["up"].append(pygame.image.load(f"Asset/Enemies/Guard/walk/Up/WalkUp ({i}).png").convert_alpha())
@@ -32,11 +36,16 @@ class Guard(Enemy):
     def update(self,player):
         if self.can_see_player(player):
             self.state="walk"
-            self.move_towards(player.rect.center)
+            self.move_towards(player.rect.center,32)
         else:
             self.patrol()
         self.animate()
     def animate(self):
+        if self.dead:
+            self.death_timer+=1
+            self.image=self.animations["death"]
+            if self.death_timer>30:
+                self.kill()
         if self.state=="idle":
             self.image=self.animations["idle"][self.direction]
         else:
@@ -64,7 +73,7 @@ class Guard(Enemy):
         dx=target[0]-self.rect.centerx
         dy=target[1]-self.rect.centery
         dist=math.hypot(dx,dy)
-        if dist<2:
+        if dist<5:
             self.patrol_index=(self.patrol_index+1)%len(self.patrol_points)
             target=self.patrol_points[self.patrol_index]
             dx=target[0]-self.rect.centerx
@@ -72,5 +81,5 @@ class Guard(Enemy):
             dist=math.hypot(dx,dy)
         else:
             self.state="walk"
-            self.move_towards(target)
+            self.move_towards(target,0)
     
