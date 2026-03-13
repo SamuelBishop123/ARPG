@@ -11,7 +11,7 @@ class Enemy(pygame.sprite.Sprite):
         self.state="idle"
         self.animation_speed=0.15
         self.frame=0
-        self.vision_range=150
+        self.vision_range=200
     def move_towards(self,target):
         dx=target[0]-self.rect.centerx
         dy=target[1]-self.rect.centery

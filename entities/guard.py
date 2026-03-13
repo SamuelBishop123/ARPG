@@ -58,12 +58,18 @@ class Guard(Enemy):
         if self.direction=="down":
             screen.blit(self.weapon,(wx,wy+10))
     def patrol(self):
+        if not self.patrol_points:
+            return
         target=self.patrol_points[self.patrol_index]
         dx=target[0]-self.rect.centerx
         dy=target[1]-self.rect.centery
         dist=math.hypot(dx,dy)
-        if dist<5:
+        if dist<2:
             self.patrol_index=(self.patrol_index+1)%len(self.patrol_points)
+            target=self.patrol_points[self.patrol_index]
+            dx=target[0]-self.rect.centerx
+            dy=target[1]-self.rect.centery
+            dist=math.hypot(dx,dy)
         else:
             self.state="walk"
             self.move_towards(target)
