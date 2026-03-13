@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="54">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="62">
  <tileset firstgid="1" source="Castle.tsx"/>
  <tileset firstgid="962" source="Trees.tsx"/>
  <tileset firstgid="1466" source="Relief.tsx"/>
@@ -143,9 +143,18 @@
   <object id="31" x="274.863" y="956.632" width="366.484"/>
   <object id="32" type="collision" x="584.758" y="910.821" width="374.568" height="48.5053"/>
   <object id="37" type="collision" x="288.337" y="261.389" width="212.884" height="247.916"/>
-  <object id="49" type="collision" x="212.884" y="506.611" width="363.789" height="188.632"/>
+  <object id="49" type="collision" x="218.273" y="493.137" width="363.789" height="188.632"/>
   <object id="52" type="collision" x="272.168" y="945.853" width="304.505" height="10.7789"/>
-  <object id="53" x="1255.75" y="431.158" width="5.38947" height="16.1684"/>
+  <object id="54" type="collision" x="212.884" y="684.463" width="158.989" height="18.8632"/>
+  <object id="56" type="collision" x="417.684" y="681.768" width="158.989" height="24.2526"/>
+ </objectgroup>
+ <objectgroup id="6" name="transitions">
+  <object id="61" type="transition" x="376" y="682" width="37" height="10">
+   <properties>
+    <property name="spawn" value="ground_spawn"/>
+    <property name="target_map" value="floor1.tmx"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer id="2" name="Trees" width="60" height="60">
   <data encoding="csv">

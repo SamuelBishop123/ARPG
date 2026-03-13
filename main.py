@@ -2,6 +2,7 @@ import pygame
 from config import *
 from world.map_loader import MapLoader
 from entities.player import Player
+from weapons.weapon import Weapon
 
 pygame.init()
 
@@ -12,7 +13,7 @@ game_map = MapLoader("maps/Map.tmx")
 
 player_x, player_y = game_map.get_spawn("player_spawn")
 
-player = Player(player_x, player_y, "Asset/Player/Idle/Idle (1).png")
+player = Player(player_x, player_y)
 
 VIEW_WIDTH = 300
 VIEW_HEIGHT = 200
@@ -22,6 +23,8 @@ view_surface = pygame.Surface((VIEW_WIDTH, VIEW_HEIGHT))
 camera_x = 0
 camera_y = 0
 
+weapon=Weapon(player,"Asset/Weapons/Katana/SpriteBack.png")
+
 clock = pygame.time.Clock()
 run = True
 
@@ -30,15 +33,24 @@ while run:
         if event.type == pygame.QUIT:
             run = False
     player.update(game_map.collisions)
+    for t in game_map.transitions:
+        if player.rect.colliderect(t["rect"]):
+            game_map=MapLoader("maps/"+t["target_map"])
+            player_x,player_y=game_map.get_spawn(t["spawn"])
+            player.rect.topleft=(player_x,player_y)
+            break
+    if player.attacking:
+        weapon.update()
     camera_x = player.rect.centerx - VIEW_WIDTH // 2
     camera_y = player.rect.centery - VIEW_HEIGHT // 2
-    view_surface.fill((0, 0, 0))
+    view_surface.fill((0,0,0))
     game_map.draw(view_surface, camera_x, camera_y)
     view_surface.blit(
         player.image,
         (player.rect.x - camera_x, player.rect.y - camera_y)
     )
-    screen.fill((0, 0, 0))
+    if player.attacking:
+        view_surface.blit(weapon.image,(weapon.rect.x-camera_x,weapon.rect.y-camera_y))
     scaled_surface=pygame.transform.scale(view_surface,(WIDTH, HEIGHT))
     screen.blit(scaled_surface, (0, 0))
     pygame.display.update()
