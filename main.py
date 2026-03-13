@@ -3,7 +3,7 @@ from config import *
 from world.map_loader import MapLoader
 from entities.player import Player
 from weapons.weapon import Weapon
-
+from entities.guard import Guard
 pygame.init()
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -14,7 +14,10 @@ game_map = MapLoader("maps/Map.tmx")
 player_x, player_y = game_map.get_spawn("player_spawn")
 
 player = Player(player_x, player_y)
-
+enemies=pygame.sprite.Group()
+for enemy in game_map.enemy_spawns:
+    if enemy["type"]=="guard":
+        enemies.add(Guard(enemy["x"],enemy["y"]))
 VIEW_WIDTH = 300
 VIEW_HEIGHT = 200
 
@@ -33,6 +36,7 @@ while run:
         if event.type == pygame.QUIT:
             run = False
     player.update(game_map.collisions)
+    enemies.update(player)
     for t in game_map.transitions:
         if player.rect.colliderect(t["rect"]):
             game_map=MapLoader("maps/"+t["target_map"])
@@ -51,6 +55,8 @@ while run:
     )
     if player.attacking:
         view_surface.blit(weapon.image,(weapon.rect.x-camera_x,weapon.rect.y-camera_y))
+    for enemy in enemies:
+        enemy.draw(view_surface,camera_x,camera_y)
     scaled_surface=pygame.transform.scale(view_surface,(WIDTH, HEIGHT))
     screen.blit(scaled_surface, (0, 0))
     pygame.display.update()

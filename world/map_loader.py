@@ -8,17 +8,26 @@ class MapLoader:
         self.height=self.tmx_data.height*self.tmx_data.tileheight
         self.collisions = []
         self.transitions=[]
+        self.enemy_spawns=[]
         for obj in self.tmx_data.objects:
             if obj.type == "collision":
                 rect=pygame.Rect(obj.x,obj.y,obj.width,obj.height)
                 self.collisions.append(rect)
-            if obj.type=="transition":
+            elif obj.type=="transition":
                 rect=pygame.Rect(obj.x,obj.y,obj.width,obj.height)
                 self.transitions.append({
                     "rect":rect,
                     "target_map":obj.properties["target_map"],
                     "spawn":obj.properties["spawn"]
                 })
+            elif obj.type=="enemy":
+                self.enemy_spawns.append(
+                    {
+                        "name":obj.name,
+                        "x":obj.x,
+                        "y":obj.y
+                    }
+                )
     def draw(self, surface, camera_x, camera_y):
         for layer in self.tmx_data.visible_layers:
             if isinstance(layer,pytmx.TiledTileLayer):
