@@ -16,12 +16,17 @@ class Guard(Enemy):
                 "left":[],
                 "right":[]
             },
+            "attack":{},
             "death":{}
         }
         self.animations["idle"]["down"]=pygame.image.load("Asset/Enemies/Guard/idle/Idle (1).png").convert_alpha()
         self.animations["idle"]["up"]=pygame.image.load("Asset/Enemies/Guard/idle/Idle (2).png").convert_alpha()
         self.animations["idle"]["left"]=pygame.image.load("Asset/Enemies/Guard/idle/Idle (3).png").convert_alpha()
         self.animations["idle"]["right"]=pygame.image.load("Asset/Enemies/Guard/idle/Idle (4).png").convert_alpha()
+        self.animations["attack"]["down"]=pygame.image.load("Asset/Enemies/Guard/attack/Attack (1).png").convert_alpha()
+        self.animations["attack"]["up"]=pygame.image.load("Asset/Enemies/Guard/attack/Attack (2).png").convert_alpha()
+        self.animations["attack"]["left"]=pygame.image.load("Asset/Enemies/Guard/attack/Attack (3).png").convert_alpha()
+        self.animations["attack"]["right"]=pygame.image.load("Asset/Enemies/Guard/attack/Attack (4).png").convert_alpha()
         self.animations["death"]=pygame.image.load("Asset/Enemies/Guard/Dead.png").convert_alpha()
         self.dead=False
         self.death_timer=0
@@ -34,9 +39,19 @@ class Guard(Enemy):
         self.rect=self.image.get_rect(topleft=(x,y))
         self.weapon=pygame.image.load("Asset/Weapons/Katana/SpriteBack.png").convert_alpha()
     def update(self,player):
+        if self.dead:
+            self.animate()
+            return
+        dx=player.rect.centerx-self.rect.centerx
+        dy=player.rect.centery-self.rect.centery
+        dist=math.hypot(dx,dy)
         if self.can_see_player(player):
-            self.state="walk"
-            self.move_towards(player.rect.center,32)
+            if dist>self.attack_range:
+                self.state="walk"
+                self.move_towards(player.rect.center,32)
+            else:
+                self.state="idle"
+                self.attack_player(player)
         else:
             self.patrol()
         self.animate()
@@ -44,8 +59,16 @@ class Guard(Enemy):
         if self.dead:
             self.death_timer+=1
             self.image=self.animations["death"]
-            if self.death_timer>30:
+            if self.death_timer>100:
                 self.kill()
+            return
+        if self.attacking:
+            self.image=self.animations["attack"][self.direction]
+            self.attack_timer-=1
+            if self.attack_timer<=0:
+                self.attacking=False
+                self.state="idle"
+            return
         if self.state=="idle":
             self.image=self.animations["idle"][self.direction]
         else:
@@ -58,14 +81,21 @@ class Guard(Enemy):
         screen.blit(self.image,(self.rect.x-camera_x,self.rect.y-camera_y))
         wx=self.rect.centerx-camera_x
         wy=self.rect.centery-camera_y
-        if self.direction=="right":
-            screen.blit(self.weapon,(wx+10,wy))
-        if self.direction=="left":
-            screen.blit(self.weapon,(wx-20,wy))
-        if self.direction=="up":
-            screen.blit(self.weapon,(wx,wy-20))
-        if self.direction=="down":
-            screen.blit(self.weapon,(wx,wy+10))
+        weapon=self.weapon
+        if self.attacking:
+            if self.direction=="down":
+                rotated=pygame.transform.rotate(weapon,0)
+                pos=(wx-8,wy+8)
+            elif self.direction=="right":
+                rotated=pygame.transform.rotate(weapon,90)
+                pos=(wx+8,wy+1)
+            elif self.direction=="up":
+                rotated=pygame.transform.rotate(weapon,180)
+                pos=(wx-8,wy-16)
+            elif self.direction=="left":
+                rotated=pygame.transform.rotate(weapon,-90)
+                pos=(wx-16,wy+1)
+            screen.blit(rotated,pos)
     def patrol(self):
         if not self.patrol_points:
             return
@@ -82,4 +112,3 @@ class Guard(Enemy):
         else:
             self.state="walk"
             self.move_towards(target,0)
-    

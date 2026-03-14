@@ -37,6 +37,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.topleft= (x,y)
         self.attacking=False
         self.damage=20
+        self.attack_cooldown=400
+        self.last_attack=0
     def update(self,collisions):
         keys=pygame.key.get_pressed()
         dx=0
@@ -102,21 +104,30 @@ class Player(pygame.sprite.Sprite):
             self.image=frames[int(self.frame)]
 
     def attack(self,enemies_group):
+        now=pygame.time.get_ticks()
+        if now-self.last_attack<self.attack_cooldown:
+            return
+        self.last_attack=now
         if not self.attacking:
             return
-        attack_rect=self.rect.copy()
-        offset=20
-        if self.direction=="up":
-            attack_rect.y-=offset
-        elif self.direction=="down":
-            attack_rect.y+=offset
-        elif self.direction=="left":
-            attack_rect.x-=offset
-        elif self.direction=="right":
-            attack_rect.x+=offset
+        attack_rect=self.get_attack_rect()
         for enemy in enemies_group:
             if attack_rect.colliderect(enemy.rect):
                 if enemy.is_player_behind(self):
-                    enemy.take_damage(999)
+                    enemy.take_damage(999,self)
+                    print('behind')
                 else:
-                    enemy.take_damage(self.damage)
+                    enemy.take_damage(self.damage,self)
+                print(enemy.health)
+    def get_attack_rect(self):
+        size=32
+        if self.direction=="right":
+            return pygame.Rect(self.rect.right, self.rect.centery-20,size,40)
+        elif self.direction=="left":
+            return pygame.Rect(self.rect.left-size, self.rect.centery-20,size,40)
+        elif self.direction=="up":
+            return pygame.Rect(self.rect.centerx-20, self.rect.top-size,40,size)
+        elif self.direction=="down":
+            return pygame.Rect(self.rect.centerx-20, self.rect.bottom,40,size)
+    def take_damage(self, damage):
+        print("Player hit!")
