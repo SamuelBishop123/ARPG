@@ -2,7 +2,7 @@ import pygame
 from config import *
 import math
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self,x,y,health,speed):
+    def __init__(self,x,y,health,speed,vision_range):
         super().__init__()
         self.rect=pygame.Rect(x,y,16,16)
         self.health=health
@@ -11,7 +11,7 @@ class Enemy(pygame.sprite.Sprite):
         self.state="idle"
         self.animation_speed=0.15
         self.frame=0
-        self.vision_range=100
+        self.vision_range=vision_range
         self.attack_range=35
         self.attack_damage=10
         self.attack_cooldown=800

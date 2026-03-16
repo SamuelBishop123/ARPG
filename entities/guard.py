@@ -4,7 +4,7 @@ import math
 
 class Guard(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, health=50, speed=1)
+        super().__init__(x, y, health=50, speed=1,vision_range=100)
         offset=50
         self.patrol_points=[(x,y),(x+offset,y),(x+offset,y+offset),(x,y+offset)]
         self.patrol_index=0

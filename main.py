@@ -4,9 +4,9 @@ from world.map_loader import MapLoader
 from entities.player import Player
 from weapons.weapon import Weapon
 from entities.guard import Guard
-from weapons.projectile import Projectile
 from weapons.docs import Doc
 from entities.npc import NPC
+from entities.raizen import Raizen
 
 pygame.init()
 
@@ -33,6 +33,8 @@ def spawn_enemies():
     for enemy in game_map.enemy_spawns:
         if enemy["name"]=="guard":
             enemies.add(Guard(enemy["x"],enemy["y"]))
+        if enemy["name"]=="boss":
+            enemies.add(Raizen(enemy["x"],enemy["y"]))
 def spawn_documents():
     document.empty()
     for doc in game_map.documents:
@@ -67,11 +69,11 @@ while run:
         if event.type == pygame.QUIT:
             run = False
         if entering_password and event.type==pygame.KEYDOWN:
-            if event.key==pygame.K_RETURN or pygame.K_KP_ENTER:
+            if event.key==pygame.K_RETURN or event.key==pygame.K_KP_ENTER:
                 if password_input.strip().lower()==current_door["password"].lower():
                     game_map=MapLoader("maps/"+current_door["target_map"])
                     player_x,player_y=game_map.get_spawn(current_door["spawn"])
-
+                    player.rect.topleft=(player_x,player_y)
                     spawn_enemies()
                     spawn_documents()
                     spawn_npcs()
@@ -83,7 +85,7 @@ while run:
             elif event.key==pygame.K_ESCAPE:
                 entering_password=False
             else:
-                if len(password_input)<20:
+                if len(password_input)<30 and event.unicode.isprintable():
                     password_input+=event.unicode
         if event.type==pygame.KEYDOWN:
             if event.key==pygame.K_e:

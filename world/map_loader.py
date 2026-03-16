@@ -4,7 +4,7 @@ import pygame
 class MapLoader:
     def __init__(self, filename):
         self.tmx_data = pytmx.load_pygame(filename)
-        npc_text="Akira- SHHHH! Tell the password --- Monk- (hesitates) --- Akira-Your lord brings destruction to innocents, plunders villages and destroys lifes. \n Yet, You support him. --- Monk- The password is Iron Cherry! Now leave me!"
+        npc_text="Akira- SHHHH! Tell the password --- Monk- (hesitates) --- Akira-Your lord brings destruction to innocents, plunders villages and destroys lifes. \n Yet, You support him. --- Monk- The password is Crimson Shadow! Now leave me!"
         self.width=self.tmx_data.width*self.tmx_data.tilewidth
         self.height=self.tmx_data.height*self.tmx_data.tileheight
         self.collisions = []
