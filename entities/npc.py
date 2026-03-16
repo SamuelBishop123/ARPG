@@ -3,8 +3,8 @@ import pygame
 class NPC(pygame.sprite.Sprite):
     def __init__(self, x,y,text):
         super().__init__()
-        self.image=pygame.image.load("Asset/NPC/Idle.png").convert_alpha()
-        self.rect=self.image.get_rect()
+        self.image=pygame.image.load("Asset/NPC/Monk/Idle.png").convert_alpha()
+        self.rect=self.image.get_rect(topleft=(x,y))
         self.text=text
         self.pages=text.split("---")
         self.page_index=0
@@ -24,11 +24,13 @@ class NPC(pygame.sprite.Sprite):
         box_surface=pygame.Surface((box_width,box_height))
         box_surface.set_alpha(210)
         box_surface.fill((60,60,60))
-        pygame.draw.rect(screen,(200,200,200),(box_x,box_y,box_width,box_height),2)
         screen.blit(box_surface,(box_x,box_y))
+        pygame.draw.rect(screen,(200,200,200),(box_x,box_y,box_width,box_height),2)
         text_x=box_x+20
         text_y=box_y+20
-        lines=self.text.split("\n")
+        page_text=self.pages[self.page_index]
+        lines=page_text.split("\n")
         for line in lines:
             text_surface=font.render(line,True,(255,255,255))
             screen.blit(text_surface,(text_x,text_y))
+            text_y+=30

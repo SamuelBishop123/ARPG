@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="42">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="44">
  <tileset firstgid="1" source="TilesetInteriorFloor.tsx"/>
  <tileset firstgid="375" source="Walls.tsx"/>
  <tileset firstgid="485" source="articles.tsx"/>
@@ -116,6 +116,12 @@ The List includes-
  1.Akechi Nagamoto 
  2.Hanzo Takeshi 
  3. Akira Mitsude</property>
+   </properties>
+  </object>
+  <object id="43" type="transition" x="209" y="0" width="47" height="30">
+   <properties>
+    <property name="spawn" value="fifth_spawn"/>
+    <property name="target_map" value="floor5.tmx"/>
    </properties>
   </object>
  </objectgroup>

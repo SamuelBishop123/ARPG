@@ -22,6 +22,11 @@ document=pygame.sprite.Group()
 enemies=pygame.sprite.Group()
 npcs=pygame.sprite.Group()
 
+entering_password=False
+password_input=""
+current_door=None
+wrong_password_timer=0
+
 player = Player(player_x, player_y)
 def spawn_enemies():
     enemies.empty()
@@ -38,7 +43,7 @@ def spawn_documents():
 def spawn_npcs():
     npcs.empty()
     for npc in game_map.npcs:
-        npcs.add(npc["x"],npc["y"],npc["text"])
+        npcs.add(NPC(npc["x"],npc["y"],npc["text"]))
 VIEW_WIDTH = 300
 VIEW_HEIGHT = 200
 
@@ -54,10 +59,32 @@ font=pygame.font.SysFont(None,28)
 clock = pygame.time.Clock()
 run = True
 
+spawn_documents()
+spawn_enemies()
+spawn_npcs()
 while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if entering_password and event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_RETURN or pygame.K_KP_ENTER:
+                if password_input.strip().lower()==current_door["password"].lower():
+                    game_map=MapLoader("maps/"+current_door["target_map"])
+                    player_x,player_y=game_map.get_spawn(current_door["spawn"])
+
+                    spawn_enemies()
+                    spawn_documents()
+                    spawn_npcs()
+                else:
+                    wrong_password_timer=60
+                entering_password=False
+            elif event.key == pygame.K_BACKSPACE:
+                password_input=password_input[:-1]
+            elif event.key==pygame.K_ESCAPE:
+                entering_password=False
+            else:
+                if len(password_input)<20:
+                    password_input+=event.unicode
         if event.type==pygame.KEYDOWN:
             if event.key==pygame.K_e:
                 for npc in npcs:
@@ -73,7 +100,12 @@ while run:
                     if player.rect.colliderect(doc.rect):
                         doc.reading=not doc.reading
                         player.reading=doc.reading
-    if not player.reading:
+                for door in game_map.password_doors:
+                    if player.rect.colliderect(door["rect"]):
+                        entering_password=True
+                        password_input=""
+                        current_door=door
+    if not player.reading and not entering_password:
         player.update(game_map.collisions,projectiles,document)
         enemies.update(player)
     player.attack(enemies)
@@ -117,14 +149,30 @@ while run:
             view_surface.blit(hint,(doc.rect.x-camera_x-10,doc.rect.y-camera_y-20))
     for npc in npcs:
         npc.draw(view_surface,camera_x,camera_y)
+        for door in game_map.password_doors:
+            if player.rect.colliderect(door["rect"]):
+                hint=font.render("Press E to enter password",True,(255,255,255))
+                view_surface.blit(hint,(door["rect"].x-camera_x-20,door["rect"].y-camera_y-20))
+    scaled_surface=pygame.transform.scale(view_surface,(WIDTH, HEIGHT))
+    screen.blit(scaled_surface, (0, 0))
     for npc in npcs:
         if npc.talking:
             npc.draw_text(screen,font,WIDTH,HEIGHT)
-    scaled_surface=pygame.transform.scale(view_surface,(WIDTH, HEIGHT))
-    screen.blit(scaled_surface, (0, 0))
     for doc in document:
         if doc.reading:
             doc.draw_text(screen,font,WIDTH,HEIGHT)
+    if entering_password:
+        box=pygame.Surface((400,120))
+        box.fill((50,50,50))
+        screen.blit(box,(WIDTH//2-200,HEIGHT//2-60))
+        title=font.render("Enter Password:-",True,(255,255,255))
+        screen.blit(title,(WIDTH//2-180,HEIGHT//2-50))
+        pw=font.render(password_input,True,(255,255,255))
+        screen.blit(pw,(WIDTH//2-180,HEIGHT//2-10))
+    if wrong_password_timer>0:
+        error=font.render("Wrong Password!",True,(255,0,0))
+        screen.blit(error,(WIDTH//2-100,HEIGHT//2+40))
+        wrong_password_timer-=1
     pygame.display.update()
     clock.tick(FPS)
 pygame.quit()
