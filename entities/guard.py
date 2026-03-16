@@ -4,7 +4,7 @@ import math
 
 class Guard(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, health=50, speed=1,vision_range=100)
+        super().__init__(x, y, health=50, speed=1,vision_range=100,damage=50)
         offset=50
         self.patrol_points=[(x,y),(x+offset,y),(x+offset,y+offset),(x,y+offset)]
         self.patrol_index=0
@@ -38,6 +38,7 @@ class Guard(Enemy):
         self.image=self.animations["idle"]["down"]
         self.rect=self.image.get_rect(topleft=(x,y))
         self.weapon=pygame.image.load("Asset/Weapons/Katana/SpriteBack.png").convert_alpha()
+        self.damage=20
     def update(self,player):
         if self.dead:
             self.animate()
@@ -112,3 +113,19 @@ class Guard(Enemy):
         else:
             self.state="walk"
             self.move_towards(target,0)
+    def can_see_player(self, player):
+        dx=player.rect.centerx-self.rect.centerx
+        dy=player.rect.centery-self.rect.centery
+        dist=math.hypot(dx,dy)
+        if dist>self.vision_range:
+            return False
+        angle_to_player=math.degrees(math.atan2(-dy,dx))
+        direction_angles={
+            "right":0,
+            "up":90,
+            "left":180,
+            "down":-90
+        }
+        guard_angle=direction_angles[self.direction]
+        angle_diff=abs((guard_angle-angle_to_player+180)%360-180)
+        return angle_diff<45

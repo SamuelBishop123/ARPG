@@ -4,7 +4,7 @@ import math
 
 class Raizen(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, health=500, speed=1.5, vision_range=500)
+        super().__init__(x, y, health=500, speed=1.5, vision_range=500,damage=50)
         self.animations={
             "idle":{},
             "walk":{
@@ -16,6 +16,10 @@ class Raizen(Enemy):
             "attack":{},
             "death":{}
         }
+        self.animation_speed=0.15
+        self.frame=0
+        self.state="idle"
+        self.direction="down"
         self.animations["idle"]["down"]=pygame.image.load("Asset/Enemies/Raizen/idle/Idle (1).png").convert_alpha()
         self.animations["idle"]["up"]=pygame.image.load("Asset/Enemies/Raizen/idle/Idle (2).png").convert_alpha()
         self.animations["idle"]["left"]=pygame.image.load("Asset/Enemies/Raizen/idle/Idle (3).png").convert_alpha()
@@ -35,8 +39,10 @@ class Raizen(Enemy):
         self.image=self.animations["idle"]["down"]
         self.rect=self.image.get_rect(topleft=(x,y))
         self.weapon=pygame.image.load("Asset/Weapons/Katana/SpriteBack.png").convert_alpha()
-        self.attack_cooldown=120
+        self.attack_cooldown=800
         self.last_attack=0
+        self.attack_timer=0
+        self.attack_range=50
     def update(self,player):
         if self.dead:
             self.animate()
@@ -95,3 +101,8 @@ class Raizen(Enemy):
                 rotated=pygame.transform.rotate(weapon,-90)
                 pos=(wx-16,wy+1)
             screen.blit(rotated,pos)
+    def can_see_player(self, player):
+        dx=player.rect.centerx-self.rect.centerx
+        dy=player.rect.centery-self.rect.centery
+        dist=math.hypot(dx,dy)
+        return dist<=self.vision_range

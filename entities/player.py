@@ -125,9 +125,8 @@ class Player(pygame.sprite.Sprite):
             if attack_rect.colliderect(enemy.rect):
                 if enemy.is_player_behind(self):
                     enemy.take_damage(999,self)
-                    print('behind')
                 else:
-                    enemy.take_damage(self.damage,self)
+                    enemy.take_damage(enemy.damage,self)
                 print(enemy.health)
     def get_attack_rect(self):
         size=32

@@ -2,7 +2,7 @@ import pygame
 from config import *
 import math
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self,x,y,health,speed,vision_range):
+    def __init__(self,x,y,health,speed,vision_range,damage):
         super().__init__()
         self.rect=pygame.Rect(x,y,16,16)
         self.health=health
@@ -18,6 +18,7 @@ class Enemy(pygame.sprite.Sprite):
         self.last_attack=0
         self.attacking=False
         self.attack_timer=0
+        self.damage=damage
     def move_towards(self,target,stop_distance):
         dx=target[0]-self.rect.centerx
         dy=target[1]-self.rect.centery
@@ -40,22 +41,6 @@ class Enemy(pygame.sprite.Sprite):
                 self.direction="down"
             else:
                 self.direction="up"
-    def can_see_player(self, player):
-        dx=player.rect.centerx-self.rect.centerx
-        dy=player.rect.centery-self.rect.centery
-        dist=math.hypot(dx,dy)
-        if dist>self.vision_range:
-            return False
-        angle_to_player=math.degrees(math.atan2(-dy,dx))
-        direction_angles={
-            "right":0,
-            "up":90,
-            "left":180,
-            "down":-90
-        }
-        guard_angle=direction_angles[self.direction]
-        angle_diff=abs((guard_angle-angle_to_player+180)%360-180)
-        return angle_diff<45
     def take_damage(self,damage,player):
         if self.dead:
             return
@@ -89,7 +74,6 @@ class Enemy(pygame.sprite.Sprite):
         now=pygame.time.get_ticks()
         if now-self.last_attack<self.attack_cooldown:
             return
-        
         self.attacking=True
         self.attack_timer=15
         self.state="attack"
