@@ -1,5 +1,6 @@
 import pygame
 from config import *
+from weapons.projectile import Projectile
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -39,11 +40,16 @@ class Player(pygame.sprite.Sprite):
         self.damage=20
         self.attack_cooldown=400
         self.last_attack=0
-    def update(self,collisions):
+        self.shoot_cooldown=400
+        self.last_shot=0
+        self.reading=False
+    def update(self,collisions,projectiles,document):
         keys=pygame.key.get_pressed()
         dx=0
         dy=0
         moving=False
+        if self.reading:
+            return
         if keys[pygame.K_SPACE] and not self.attacking:
             self.attacking=True
             self.attack_timer=0
@@ -65,6 +71,13 @@ class Player(pygame.sprite.Sprite):
                 dx+=PLAYER_SPEED
                 self.direction="right"
                 moving=True
+            if keys[pygame.K_f]:
+                self.shoot(projectiles)
+            if keys[pygame.K_e]:
+                for doc in document:
+                    if self.rect.colliderect(doc.rect):
+                        doc.reading=not doc.reading
+                        self.reading=doc.reading
             if moving:
                 self.state="walk"
             else:
@@ -104,6 +117,8 @@ class Player(pygame.sprite.Sprite):
             self.image=frames[int(self.frame)]
 
     def attack(self,enemies_group):
+        if self.reading:
+            return
         now=pygame.time.get_ticks()
         if now-self.last_attack<self.attack_cooldown:
             return
@@ -131,3 +146,13 @@ class Player(pygame.sprite.Sprite):
             return pygame.Rect(self.rect.centerx-20, self.rect.bottom,40,size)
     def take_damage(self, damage):
         print("Player hit!")
+    def shoot(self,projectiles):
+        now=pygame.time.get_ticks()
+        if now-self.last_shot<self.shoot_cooldown:
+            return
+        self.last_shot=now
+        px=self.rect.centerx
+        py=self.rect.centery
+        self.state="attack"
+        projectile=Projectile(px,py,self.direction)
+        projectiles.add(projectile)

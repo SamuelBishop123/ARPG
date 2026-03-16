@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="50">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="57">
  <tileset firstgid="1" source="TilesetInteriorFloor.tsx"/>
  <tileset firstgid="375" source="Walls.tsx"/>
  <layer id="1" name="Floor" width="30" height="30">
@@ -88,11 +88,19 @@
   <object id="46" type="collision" x="192" y="474" width="84" height="4"/>
  </objectgroup>
  <objectgroup id="5" name="enemy">
-  <object id="48" name="guard" type="enemy" x="232" y="38"/>
+  <object id="48" name="guard" type="enemy" x="231" y="56"/>
   <object id="49" name="guard" type="enemy" x="242" y="271"/>
  </objectgroup>
  <objectgroup id="4" name="spawn">
   <object id="44" x="225" y="458"/>
   <object id="45" name="ground_spawn" x="225" y="458"/>
+ </objectgroup>
+ <objectgroup id="6" name="transitions">
+  <object id="53" type="transition" x="209" y="0" width="47" height="9">
+   <properties>
+    <property name="spawn" value="first_spawn"/>
+    <property name="target_map" value="floor2.tmx"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

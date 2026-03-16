@@ -9,6 +9,7 @@ class MapLoader:
         self.collisions = []
         self.transitions=[]
         self.enemy_spawns=[]
+        self.documents=[]
         for obj in self.tmx_data.objects:
             if obj.type == "collision":
                 rect=pygame.Rect(obj.x,obj.y,obj.width,obj.height)
@@ -28,6 +29,13 @@ class MapLoader:
                         "y":obj.y
                     }
                 )
+            elif obj.name=="scroll" or obj.name=="letter":
+                self.documents.append({
+                    "name":obj.name,
+                    "x":obj.x,
+                    "y":obj.y,
+                    "text":obj.properties.get("text","")
+                })
     def draw(self, surface, camera_x, camera_y):
         for layer in self.tmx_data.visible_layers:
             if isinstance(layer,pytmx.TiledTileLayer):
