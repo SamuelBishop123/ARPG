@@ -73,11 +73,6 @@ class Player(pygame.sprite.Sprite):
                 moving=True
             if keys[pygame.K_f]:
                 self.shoot(projectiles)
-            if keys[pygame.K_e]:
-                for doc in document:
-                    if self.rect.colliderect(doc.rect):
-                        doc.reading=not doc.reading
-                        self.reading=doc.reading
             if moving:
                 self.state="walk"
             else:

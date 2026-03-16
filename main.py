@@ -6,6 +6,7 @@ from weapons.weapon import Weapon
 from entities.guard import Guard
 from weapons.projectile import Projectile
 from weapons.docs import Doc
+from entities.npc import NPC
 
 pygame.init()
 
@@ -19,6 +20,7 @@ player_x, player_y = game_map.get_spawn("player_spawn")
 projectiles=pygame.sprite.Group()
 document=pygame.sprite.Group()
 enemies=pygame.sprite.Group()
+npcs=pygame.sprite.Group()
 
 player = Player(player_x, player_y)
 def spawn_enemies():
@@ -33,6 +35,10 @@ def spawn_documents():
             document.add(Doc(doc["x"],doc["y"],"Asset/Docs/scroll.png",doc["text"]))
         if doc["name"]=="letter":
             document.add(Doc(doc["x"],doc["y"],"Asset/Docs/letter.png",doc["text"]))
+def spawn_npcs():
+    npcs.empty()
+    for npc in game_map.npcs:
+        npcs.add(npc["x"],npc["y"],npc["text"])
 VIEW_WIDTH = 300
 VIEW_HEIGHT = 200
 
@@ -52,6 +58,21 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_e:
+                for npc in npcs:
+                    if npc.talking:
+                        npc.next_page()
+                        player.reading=npc.talking
+                        break
+                    if player.rect.colliderect(npc.rect):
+                        npc.talking=True
+                        player.reading=True
+                        break
+                for doc in document:
+                    if player.rect.colliderect(doc.rect):
+                        doc.reading=not doc.reading
+                        player.reading=doc.reading
     if not player.reading:
         player.update(game_map.collisions,projectiles,document)
         enemies.update(player)
@@ -94,6 +115,11 @@ while run:
         if player.rect.colliderect(doc.rect) and not doc.reading:
             hint=font.render("Press E to read",True,(255,255,255))
             view_surface.blit(hint,(doc.rect.x-camera_x-10,doc.rect.y-camera_y-20))
+    for npc in npcs:
+        npc.draw(view_surface,camera_x,camera_y)
+    for npc in npcs:
+        if npc.talking:
+            npc.draw_text(screen,font,WIDTH,HEIGHT)
     scaled_surface=pygame.transform.scale(view_surface,(WIDTH, HEIGHT))
     screen.blit(scaled_surface, (0, 0))
     for doc in document:

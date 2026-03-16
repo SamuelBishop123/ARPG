@@ -12,12 +12,14 @@ class Doc(pygame.sprite.Sprite):
         surface.blit(self.image,(self.rect.x-camera_x,self.rect.y-camera_y))
     def draw_text(self,screen,font,width,height):
         overlay=pygame.Surface((width, height))
-        overlay.set_alpha(200)
-        overlay.fill((0,0,0))
+        overlay.set_alpha(180)
+        overlay.fill((80,80,80))
+        screen.blit(overlay,(0,0))
         lines=self.text.split("\n")
+        x=60
+        y=60
         y=height//2-(len(lines)*15)
         for line in lines:
             text_surface=font.render(line,True,(255,255,255))
-            x=width//2-text_surface.get_width()//2
             screen.blit(text_surface,(x,y))
             y+=30

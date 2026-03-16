@@ -4,12 +4,14 @@ import pygame
 class MapLoader:
     def __init__(self, filename):
         self.tmx_data = pytmx.load_pygame(filename)
+        npc_text="Akira- SHHHH! Tell the password --- Monk- (hesitates) --- Akira-Your lord brings destruction to innocents, plunders villages and destroys lifes. Yet, You support him. --- Monk- The password is Iron Cherry! Now leave me!"
         self.width=self.tmx_data.width*self.tmx_data.tilewidth
         self.height=self.tmx_data.height*self.tmx_data.tileheight
         self.collisions = []
         self.transitions=[]
         self.enemy_spawns=[]
         self.documents=[]
+        self.npcs=[]
         for obj in self.tmx_data.objects:
             if obj.type == "collision":
                 rect=pygame.Rect(obj.x,obj.y,obj.width,obj.height)
@@ -36,6 +38,13 @@ class MapLoader:
                     "y":obj.y,
                     "text":obj.properties.get("text","")
                 })
+            elif obj.name=="npc_spawn":
+                self.npcs.append({
+                    "x":obj.x,
+                    "y":obj.y,
+                    "text":npc_text
+                })
+            print(self.npcs)
     def draw(self, surface, camera_x, camera_y):
         for layer in self.tmx_data.visible_layers:
             if isinstance(layer,pytmx.TiledTileLayer):
