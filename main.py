@@ -17,20 +17,16 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("The Shogun of The Iron Banner: Fort Kugane")
 
-# 🎮 GAME STATE
 game_state = "menu"
 menu_selected = 0
 
-# 🎨 FONTS
 font = pygame.font.Font(None, 24)
 font_big = pygame.font.Font(None, 48)
 font_small = pygame.font.Font(None, 24)
 
-# 📂 MAP
 game_map = MapLoader("maps/Map.tmx")
 player_x, player_y = game_map.get_spawn("player_spawn")
 
-# 📦 GROUPS
 projectiles = pygame.sprite.Group()
 document = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
@@ -53,17 +49,14 @@ raizen_cutscene = Cutscene([
 cutscene_active = False
 raizen_triggered = False
 
-# 🔐 PASSWORD
 entering_password = False
 password_input = ""
 current_door = None
 wrong_password_timer = 0
 
-# 🧍 PLAYER
 player = Player(player_x, player_y)
 weapon = Weapon(player, "Asset/Weapons/Katana/SpriteBack.png")
 
-# 🧠 SPAWN FUNCTIONS
 def spawn_enemies():
     enemies.empty()
     for enemy in game_map.enemy_spawns:
@@ -95,7 +88,6 @@ spawn_enemies()
 spawn_documents()
 spawn_npcs()
 
-# 🎥 CAMERA
 VIEW_WIDTH = 300
 VIEW_HEIGHT = 200
 view_surface = pygame.Surface((VIEW_WIDTH, VIEW_HEIGHT))
@@ -105,7 +97,6 @@ camera_y = 0
 clock = pygame.time.Clock()
 run = True
 
-# 🎨 UI
 def draw_menu():
     screen.fill((15, 15, 25))
     title = font_big.render("IRON BANNER", True, (255, 255, 255))
@@ -120,9 +111,13 @@ def draw_menu():
 def draw_story():
     screen.fill((20, 20, 30))
     lines = [
-        "The Kingdom  has  fallen...",
-        "Raizen rules with fear.",
-        "You are the last shadow.",
+        "Japan has fallen...",
+        "The Iron Shogunate rules with fear.",
+        "You are the last shadow from a revolutionary group",
+        "Objectives-",
+        "Infiltrate Castle Kugane",
+        "Read the Shogunate's secret files in floor 2",
+        "Kill Raizen and all generals",
         "",
         "Press ENTER to begin"
     ]
@@ -155,13 +150,10 @@ def draw_defeat():
     restart = font_small.render("Press R to restart", True, (150, 150, 150))
     screen.blit(restart, restart.get_rect(center=(WIDTH//2, HEIGHT//2 + 40)))
 
-# 🔁 LOOP
 while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-
-        # MENU
         if game_state == "menu":
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
@@ -173,13 +165,9 @@ while run:
                         game_state = "story"
                     else:
                         run = False
-
-        # STORY
         elif game_state == "story":
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 game_state = "playing"
-
-        # PAUSE
         elif game_state in ["playing", "paused"]:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 game_state = "paused" if game_state == "playing" else "playing"
