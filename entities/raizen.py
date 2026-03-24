@@ -60,8 +60,8 @@ class Raizen(Enemy):
         dy=player.rect.centery-self.rect.centery
         dist=math.hypot(dx,dy)
         if self.dashing:
-            self.rect.x+=self.dash_dx*self.dash_speed
-            self.rect.y+=self.dash_dy*self.dash_speed
+            dx=self.dash_dx*self.dash_speed
+            dy=self.dash_dy*self.dash_speed
             self.move(dx,0,collision)
             self.move(0,dy,collision)
             self.dash_timer-=1
