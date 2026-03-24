@@ -94,3 +94,18 @@ class Enemy(pygame.sprite.Sprite):
         player.take_damage(self.attack_damage)
         self.last_attack=now
         self.attack_count+=1
+    def move(self,dx,dy,collision):
+        self.rect.x+=dx
+        for rect in collision:
+                if self.rect.colliderect(rect):
+                    if dx>0:
+                        self.rect.right=rect.left
+                    elif dx<0:
+                        self.rect.left=rect.right
+        self.rect.y+=dy
+        for rect in collision:
+                if self.rect.colliderect(rect):
+                    if dy>0:
+                        self.rect.bottom=rect.top
+                    elif dx<0:
+                        self.rect.top=rect.bottom

@@ -62,6 +62,8 @@ class Raizen(Enemy):
         if self.dashing:
             self.rect.x+=self.dash_dx*self.dash_speed
             self.rect.y+=self.dash_dy*self.dash_speed
+            self.move(dx,0,collision)
+            self.move(0,dy,collision)
             self.dash_timer-=1
             if self.rect.colliderect(player.rect):
                 player.take_damage(40)
