@@ -37,12 +37,16 @@ class Player(pygame.sprite.Sprite):
         self.rect=self.image.get_rect()
         self.rect.topleft= (x,y)
         self.attacking=False
-        self.damage=20
-        self.attack_cooldown=400
+        self.attack_cooldown=200
         self.last_attack=0
         self.shoot_cooldown=400
         self.last_shot=0
         self.reading=False
+        self.max_health=500
+        self.health=500
+        self.invincible=False
+        self.invincible_timer=0
+        self.knockback=pygame.Vector2(0,0)
     def update(self,collisions,projectiles,document):
         keys=pygame.key.get_pressed()
         dx=0
@@ -126,8 +130,7 @@ class Player(pygame.sprite.Sprite):
                 if enemy.is_player_behind(self):
                     enemy.take_damage(999,self)
                 else:
-                    enemy.take_damage(enemy.damage,self)
-                print(enemy.health)
+                    enemy.take_damage(enemy.damage,self)                
     def get_attack_rect(self):
         size=32
         if self.direction=="right":
@@ -139,7 +142,9 @@ class Player(pygame.sprite.Sprite):
         elif self.direction=="down":
             return pygame.Rect(self.rect.centerx-20, self.rect.bottom,40,size)
     def take_damage(self, damage):
-        print("Player hit!")
+        if self.invincible:
+            return
+        self.health-=damage
     def shoot(self,projectiles):
         now=pygame.time.get_ticks()
         if now-self.last_shot<self.shoot_cooldown:

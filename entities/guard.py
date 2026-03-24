@@ -4,7 +4,7 @@ import math
 
 class Guard(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, health=50, speed=1,vision_range=100,damage=50,attack_damage=10)
+        super().__init__(x, y, health=50, speed=1,vision_range=100,damage=30,attack_damage=10)
         offset=50
         self.patrol_points=[(x,y),(x+offset,y),(x+offset,y+offset),(x,y+offset)]
         self.patrol_index=0
@@ -38,7 +38,6 @@ class Guard(Enemy):
         self.image=self.animations["idle"]["down"]
         self.rect=self.image.get_rect(topleft=(x,y))
         self.weapon=pygame.image.load("Asset/Weapons/Katana/SpriteBack.png").convert_alpha()
-        self.damage=20
         self.max_health=self.health
     def update(self,player,collision):
         if self.dead:

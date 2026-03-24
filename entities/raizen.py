@@ -4,7 +4,7 @@ import math
 
 class Raizen(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, health=500, speed=1.5, vision_range=500,damage=25,attack_damage=50)
+        super().__init__(x, y, health=450, speed=1.5, vision_range=500,damage=25,attack_damage=50)
         self.animations={
             "idle":{},
             "walk":{

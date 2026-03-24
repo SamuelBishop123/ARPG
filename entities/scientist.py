@@ -2,9 +2,9 @@ import pygame
 from entities.enemy import Enemy
 import math
 
-class Robot(Enemy):
+class Scientist(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, health=150, speed=1.5,vision_range=150,damage=50,attack_damage=15)
+        super().__init__(x, y, health=40, speed=1,vision_range=50,damage=50,attack_damage=10)
         self.animations={
             "idle":{},
             "walk":{
@@ -16,22 +16,22 @@ class Robot(Enemy):
             "attack":{},
             "death":{}
         }
-        self.animations["idle"]["down"]=pygame.image.load("Asset/Enemies/Robot/idle/Idle (1).png").convert_alpha()
-        self.animations["idle"]["up"]=pygame.image.load("Asset/Enemies/Robot/idle/Idle (2).png").convert_alpha()
-        self.animations["idle"]["left"]=pygame.image.load("Asset/Enemies/Robot/idle/Idle (3).png").convert_alpha()
-        self.animations["idle"]["right"]=pygame.image.load("Asset/Enemies/Robot/idle/Idle (4).png").convert_alpha()
-        self.animations["attack"]["down"]=pygame.image.load("Asset/Enemies/Robot/attack/Attack (1).png").convert_alpha()
-        self.animations["attack"]["up"]=pygame.image.load("Asset/Enemies/Robot/attack/Attack (2).png").convert_alpha()
-        self.animations["attack"]["left"]=pygame.image.load("Asset/Enemies/Robot/attack/Attack (3).png").convert_alpha()
-        self.animations["attack"]["right"]=pygame.image.load("Asset/Enemies/Robot/attack/Attack (4).png").convert_alpha()
-        self.animations["death"]=pygame.image.load("Asset/Enemies/Robot/Dead.png").convert_alpha()
+        self.animations["idle"]["down"]=pygame.image.load("Asset/Enemies/Scientist/idle/Idle (1).png").convert_alpha()
+        self.animations["idle"]["up"]=pygame.image.load("Asset/Enemies/Scientist/idle/Idle (2).png").convert_alpha()
+        self.animations["idle"]["left"]=pygame.image.load("Asset/Enemies/Scientist/idle/Idle (3).png").convert_alpha()
+        self.animations["idle"]["right"]=pygame.image.load("Asset/Enemies/Scientist/idle/Idle (4).png").convert_alpha()
+        self.animations["attack"]["down"]=pygame.image.load("Asset/Enemies/Scientist/attack/Attack (1).png").convert_alpha()
+        self.animations["attack"]["up"]=pygame.image.load("Asset/Enemies/Scientist/attack/Attack (2).png").convert_alpha()
+        self.animations["attack"]["left"]=pygame.image.load("Asset/Enemies/Scientist/attack/Attack (3).png").convert_alpha()
+        self.animations["attack"]["right"]=pygame.image.load("Asset/Enemies/Scientist/attack/Attack (4).png").convert_alpha()
+        self.animations["death"]=pygame.image.load("Asset/Enemies/Scientist/Dead.png").convert_alpha()
         self.dead=False
         self.death_timer=0
         for i in range(1,5):
-            self.animations["walk"]["down"].append(pygame.image.load(f"Asset/Enemies/Robot/walk/Down/WalkDown ({i}).png").convert_alpha())
-            self.animations["walk"]["up"].append(pygame.image.load(f"Asset/Enemies/Robot/walk/Up/WalkUp ({i}).png").convert_alpha())
-            self.animations["walk"]["right"].append(pygame.image.load(f"Asset/Enemies/Robot/walk/Right/WalkRight ({i}).png").convert_alpha())
-            self.animations["walk"]["left"].append(pygame.image.load(f"Asset/Enemies/Robot/walk/Left/WalkLeft ({i}).png").convert_alpha())
+            self.animations["walk"]["down"].append(pygame.image.load(f"Asset/Enemies/Scientist/walk/Down/WalkDown ({i}).png").convert_alpha())
+            self.animations["walk"]["up"].append(pygame.image.load(f"Asset/Enemies/Scientist/walk/Up/WalkUp ({i}).png").convert_alpha())
+            self.animations["walk"]["right"].append(pygame.image.load(f"Asset/Enemies/Scientist/walk/Right/WalkRight ({i}).png").convert_alpha())
+            self.animations["walk"]["left"].append(pygame.image.load(f"Asset/Enemies/Scientist/walk/Left/WalkLeft ({i}).png").convert_alpha())
         self.image=self.animations["idle"]["down"]
         self.rect=self.image.get_rect(topleft=(x,y))
         self.max_health=self.health
@@ -65,7 +65,7 @@ class Robot(Enemy):
             if self.death_timer>100:
                 self.kill()
             return
-        if self.attacking== True or self.state=="attack":
+        if self.attacking:
             self.image=self.animations["attack"][self.direction]
             self.attack_timer-=1
             if self.attack_timer<=0:
@@ -84,7 +84,7 @@ class Robot(Enemy):
         screen.blit(self.image,(self.rect.x-camera_x,self.rect.y-camera_y))
         self.draw_health_bar(screen,camera_x,camera_y)
         for bullet in self.projectiles:
-            pygame.draw.rect(screen,(255,0,0),(bullet["x"]-camera_x,bullet["y"]-camera_y,6,6))
+            pygame.draw.rect(screen,(0,255,0),(bullet["x"]-camera_x,bullet["y"]-camera_y,6,6))
     def can_see_player(self, player):
         dx=player.rect.centerx-self.rect.centerx
         dy=player.rect.centery-self.rect.centery
@@ -117,8 +117,6 @@ class Robot(Enemy):
                 "speed":5
             }
             self.projectiles.append(bullet)
-            self.attacking=True
-            self.attack_timer=10
             self.last_shot=now
     def update_projectiles(self,player,collision):
         for bullet in self.projectiles[:]:

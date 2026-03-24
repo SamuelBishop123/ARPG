@@ -38,7 +38,7 @@ class Enemy(pygame.sprite.Sprite):
                 if self.rect.colliderect(rect):
                     if dy>0:
                         self.rect.bottom=rect.top
-                    elif dx<0:
+                    elif dy<0:
                         self.rect.top=rect.bottom
             self.state="walk"
         else:
@@ -107,5 +107,5 @@ class Enemy(pygame.sprite.Sprite):
                 if self.rect.colliderect(rect):
                     if dy>0:
                         self.rect.bottom=rect.top
-                    elif dx<0:
+                    elif dy<0:
                         self.rect.top=rect.bottom

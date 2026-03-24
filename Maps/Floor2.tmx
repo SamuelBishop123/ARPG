@@ -121,8 +121,8 @@ The List includes-
   </object>
   <object id="43" type="transition" x="209" y="0" width="47" height="30">
    <properties>
-    <property name="spawn" value="fourth_spawn"/>
-    <property name="target_map" value="floor4.tmx"/>
+    <property name="spawn" value="third_spawn"/>
+    <property name="target_map" value="floor3.tmx"/>
    </properties>
   </object>
   <object id="56" name="scroll" x="331" y="238">

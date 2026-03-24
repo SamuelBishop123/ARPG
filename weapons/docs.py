@@ -26,4 +26,4 @@ class Doc(pygame.sprite.Sprite):
         for line in lines:
             text_surface=font.render(line,True,(255,255,255))
             screen.blit(text_surface,(x,y))
-            y+=22
+            y+=30
