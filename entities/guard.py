@@ -4,7 +4,7 @@ import math
 
 class Guard(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, health=50, speed=1,vision_range=100,damage=50)
+        super().__init__(x, y, health=50, speed=1,vision_range=100,damage=50,attack_damage=10)
         offset=50
         self.patrol_points=[(x,y),(x+offset,y),(x+offset,y+offset),(x,y+offset)]
         self.patrol_index=0
@@ -39,7 +39,8 @@ class Guard(Enemy):
         self.rect=self.image.get_rect(topleft=(x,y))
         self.weapon=pygame.image.load("Asset/Weapons/Katana/SpriteBack.png").convert_alpha()
         self.damage=20
-    def update(self,player):
+        self.max_health=self.health
+    def update(self,player,collision):
         if self.dead:
             self.animate()
             return
@@ -49,12 +50,12 @@ class Guard(Enemy):
         if self.can_see_player(player):
             if dist>self.attack_range:
                 self.state="walk"
-                self.move_towards(player.rect.center,32)
+                self.move_towards(player.rect.center,32,collision)
             else:
                 self.state="idle"
                 self.attack_player(player)
         else:
-            self.patrol()
+            self.patrol(collision)
         self.animate()
     def animate(self):
         if self.dead:
@@ -97,7 +98,8 @@ class Guard(Enemy):
                 rotated=pygame.transform.rotate(weapon,-90)
                 pos=(wx-16,wy+1)
             screen.blit(rotated,pos)
-    def patrol(self):
+            self.draw_health_bar(screen,camera_x,camera_y)
+    def patrol(self,collisions):
         if not self.patrol_points:
             return
         target=self.patrol_points[self.patrol_index]
@@ -112,7 +114,7 @@ class Guard(Enemy):
             dist=math.hypot(dx,dy)
         else:
             self.state="walk"
-            self.move_towards(target,0)
+            self.move_towards(target,0,collisions)
     def can_see_player(self, player):
         dx=player.rect.centerx-self.rect.centerx
         dy=player.rect.centery-self.rect.centery
@@ -129,3 +131,12 @@ class Guard(Enemy):
         guard_angle=direction_angles[self.direction]
         angle_diff=abs((guard_angle-angle_to_player+180)%360-180)
         return angle_diff<45
+    def draw_health_bar(self,screen,camera_x,camera_y):
+        bar_width=20
+        bar_height=6
+        x=self.rect.centerx-camera_x-bar_width//2
+        y=self.rect.y-camera_y-10
+        pygame.draw.rect(screen,(100,100,100),(x,y,bar_width,bar_height))
+        health_ratio=self.health/self.max_health
+        pygame.draw.rect(screen,(255,0,0),(x,y,int(bar_width*health_ratio),bar_height))
+        pygame.draw.rect(screen,(255,255,255),(x,y,bar_width,bar_height),1)

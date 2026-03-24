@@ -31,8 +31,8 @@
   <object id="13" type="collision" x="1" y="2" width="322" height="60"/>
   <object id="14" type="collision" x="262" y="3" width="59" height="320"/>
   <object id="15" type="collision" x="-1" y="250" width="324" height="73"/>
-  <object id="17" name="cabin_spawn" x="165" y="208"/>
-  <object id="18" name="boss" type="enemy" x="157" y="100"/>
+  <object id="17" name="cabin_spawn" x="160" y="224"/>
+  <object id="18" name="boss" type="enemy" x="162" y="166"/>
  </objectgroup>
  <layer id="1" name="Interior" width="20" height="20">
   <data encoding="csv">

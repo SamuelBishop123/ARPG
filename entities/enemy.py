@@ -2,7 +2,7 @@ import pygame
 from config import *
 import math
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self,x,y,health,speed,vision_range,damage):
+    def __init__(self,x,y,health,speed,vision_range,damage,attack_damage):
         super().__init__()
         self.rect=pygame.Rect(x,y,16,16)
         self.health=health
@@ -13,19 +13,33 @@ class Enemy(pygame.sprite.Sprite):
         self.frame=0
         self.vision_range=vision_range
         self.attack_range=35
-        self.attack_damage=10
+        self.attack_damage=attack_damage
         self.attack_cooldown=800
         self.last_attack=0
         self.attacking=False
         self.attack_timer=0
         self.damage=damage
-    def move_towards(self,target,stop_distance):
+        self.attack_count=0
+        self.attack_limit=10
+    def move_towards(self,target,stop_distance,collision):
         dx=target[0]-self.rect.centerx
         dy=target[1]-self.rect.centery
         dist=math.hypot(dx,dy)
         if dist>stop_distance:
             self.rect.x+=self.speed*dx/dist
+            for rect in collision:
+                if self.rect.colliderect(rect):
+                    if dx>0:
+                        self.rect.right=rect.left
+                    elif dx<0:
+                        self.rect.left=rect.right
             self.rect.y+=self.speed*dy/dist
+            for rect in collision:
+                if self.rect.colliderect(rect):
+                    if dy>0:
+                        self.rect.bottom=rect.top
+                    elif dx<0:
+                        self.rect.top=rect.bottom
             self.state="walk"
         else:
             self.state="idle"
@@ -79,3 +93,4 @@ class Enemy(pygame.sprite.Sprite):
         self.state="attack"
         player.take_damage(self.attack_damage)
         self.last_attack=now
+        self.attack_count+=1

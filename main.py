@@ -7,11 +7,13 @@ from entities.guard import Guard
 from weapons.docs import Doc
 from entities.npc import NPC
 from entities.raizen import Raizen
+from systems.cutscene import Cutscene
+from entities.general import General
 
 pygame.init()
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("The Shadow of the Iron Banner")
+pygame.display.set_caption("The Shogun of The Iron Banner: Fort Kugane")
 
 game_map = MapLoader("maps/Map.tmx")
 
@@ -21,6 +23,25 @@ projectiles=pygame.sprite.Group()
 document=pygame.sprite.Group()
 enemies=pygame.sprite.Group()
 npcs=pygame.sprite.Group()
+
+raizen_cutscene=Cutscene([
+    "Raizen: So, The rat which have destroyed my pawns has come to me",
+    "Akira: I didnt came for your words. I came for answers",
+    "Raizen: Answers?",
+    "Raizen: (Chuckles softly)",
+    "Raizen: You've been cutting my men... and you still dont know what you're fighting?",
+    "Akira: I know enough. You exceute innocents. You spread fear.",
+    "Raizen: Fear is not spread... it is revealed. People obey because they're weak.",
+    "Akira: No. They obey because of monsters like you.",
+    "Raizen: Monster... I was called that long before.",
+    "Raizen: Do you think japan can be changed? Kings fall... Empires rot... Power is the only truth",
+    "Akira: Then I will change it.",
+    "Raizen: ...Good",
+    "Raizen: Then come, the famous Oni No Kage. Let this be the place where your story ends"
+
+])
+cutscene_active=False
+raizen_triggered=False
 
 entering_password=False
 password_input=""
@@ -35,6 +56,8 @@ def spawn_enemies():
             enemies.add(Guard(enemy["x"],enemy["y"]))
         if enemy["name"]=="boss":
             enemies.add(Raizen(enemy["x"],enemy["y"]))
+        if enemy["name"]=="general":
+            enemies.add(General(enemy["x"],enemy["y"]))
 def spawn_documents():
     document.empty()
     for doc in game_map.documents:
@@ -56,7 +79,7 @@ camera_y = 0
 
 weapon=Weapon(player,"Asset/Weapons/Katana/SpriteBack.png")
 
-font=pygame.font.SysFont(None,28)
+font=pygame.font.SysFont(None,24)
 
 clock = pygame.time.Clock()
 run = True
@@ -87,6 +110,12 @@ while run:
             else:
                 if len(password_input)<30 and event.unicode.isprintable():
                     password_input+=event.unicode
+        if event.type==pygame.KEYDOWN and cutscene_active:
+            if event.key==pygame.K_e:
+                raizen_cutscene.next_page()
+                if not raizen_cutscene.active:
+                    cutscene_active=False
+                    player.reading=False
         if event.type==pygame.KEYDOWN:
             if event.key==pygame.K_e:
                 for npc in npcs:
@@ -107,11 +136,16 @@ while run:
                         entering_password=True
                         password_input=""
                         current_door=door
-    if not player.reading and not entering_password:
+    if not player.reading and not entering_password and not cutscene_active:
         player.update(game_map.collisions,projectiles,document)
-        enemies.update(player)
+        enemies.update(player,game_map.collisions)
     player.attack(enemies)
     projectiles.update()
+    for enemy in enemies:
+        if isinstance(enemy,Raizen)and not raizen_triggered:
+            if player.rect.colliderect(enemy.rect.inflate(200,200)):
+                cutscene_active=True
+                raizen_triggered=True
     for projectile in projectiles:
         for enemy in enemies:
             if projectile.rect.colliderect(enemy.rect):
@@ -175,6 +209,9 @@ while run:
         error=font.render("Wrong Password!",True,(255,0,0))
         screen.blit(error,(WIDTH//2-100,HEIGHT//2+40))
         wrong_password_timer-=1
+    if cutscene_active:
+        player.reading=True
+        raizen_cutscene.draw(screen,font,WIDTH,HEIGHT)
     pygame.display.update()
     clock.tick(FPS)
 pygame.quit()
