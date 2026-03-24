@@ -4,7 +4,7 @@ import math
 
 class Scientist(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, health=40, speed=1,vision_range=50,damage=50,attack_damage=10)
+        super().__init__(x, y, health=40, speed=1,vision_range=100,damage=50,attack_damage=10)
         self.animations={
             "idle":{},
             "walk":{
