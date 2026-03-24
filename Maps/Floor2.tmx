@@ -211,6 +211,5 @@ Raizen&quot;</property>
   <object id="51" name="guard" type="enemy" x="198" y="204"/>
   <object id="52" name="guard" type="enemy" x="289" y="195"/>
   <object id="53" name="guard" type="enemy" x="242" y="277"/>
-  <object id="60" name="general" type="enemy" x="239" y="153"/>
  </objectgroup>
 </map>

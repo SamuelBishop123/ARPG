@@ -42,8 +42,8 @@ class Player(pygame.sprite.Sprite):
         self.shoot_cooldown=400
         self.last_shot=0
         self.reading=False
-        self.max_health=500
-        self.health=500
+        self.max_health=600
+        self.health=600
         self.invincible=False
         self.invincible_timer=0
         self.knockback=pygame.Vector2(0,0)
