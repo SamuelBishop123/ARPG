@@ -102,7 +102,7 @@ def draw_menu():
     title = font_big.render("IRON BANNER", True, (255, 255, 255))
     screen.blit(title, title.get_rect(center=(WIDTH//2, 150)))
 
-    options = ["Start Game", "Quit"]
+    options = ["Start Game","Credits","Quit"]
     for i, option in enumerate(options):
         color = (255, 215, 0) if i == menu_selected else (200, 200, 200)
         text = font_small.render(option, True, color)
@@ -149,7 +149,29 @@ def draw_defeat():
     screen.blit(sub, sub.get_rect(center=(WIDTH//2, HEIGHT//2)))
     restart = font_small.render("Press R to restart", True, (150, 150, 150))
     screen.blit(restart, restart.get_rect(center=(WIDTH//2, HEIGHT//2 + 40)))
-
+def draw_credits():
+    screen.fill((10,10,10))
+    lines=[
+        "THE SHOGUN OF THE IRON BANNER:",
+        "The Shadow of Kugane",
+        "",
+        "Developed and programmed By",
+        "Samuel Bishop(Github ID- SamuelBishop123)",
+        "",
+        "Game Asset",
+        "Ninja Adventure - Asset Pack By pixel-boy",
+        "",
+        "Special Thanks",
+        "CHATGPT and Swarnabja Dutta(Github ID-Thegecko-codes)",
+        "",
+        "Press ESC to return"
+    ]
+    for i,line in enumerate(lines):
+        if i==0 or i==1:
+            text=font_big.render(line,True,(255,215,0))
+        else:
+            text=font.render(line,True,(220,220,220))
+        screen.blit(text,text.get_rect(center=(WIDTH//2,120+i*35)))
 while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -157,12 +179,14 @@ while run:
         if game_state == "menu":
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    menu_selected = (menu_selected - 1) % 2
+                    menu_selected = (menu_selected - 1) % 3
                 elif event.key == pygame.K_DOWN:
-                    menu_selected = (menu_selected + 1) % 2
+                    menu_selected = (menu_selected + 1) % 3
                 elif event.key == pygame.K_RETURN:
                     if menu_selected == 0:
                         game_state = "story"
+                    elif menu_selected==1:
+                        game_state="credits"
                     else:
                         run = False
         elif game_state == "story":
@@ -171,6 +195,9 @@ while run:
         elif game_state in ["playing", "paused"]:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 game_state = "paused" if game_state == "playing" else "playing"
+        elif game_state in "credits":
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                game_state = "menu"
         if game_state == "game_over":
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 run = False
@@ -321,6 +348,8 @@ while run:
         draw_game_over()
     elif game_state=="defeat":
         draw_defeat()
+    elif game_state=="credits":
+        draw_credits()
     pygame.display.update()
     clock.tick(FPS)
 pygame.quit()
